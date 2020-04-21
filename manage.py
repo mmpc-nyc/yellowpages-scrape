@@ -4,7 +4,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 app = Flask(__name__)
-app.config.from_pyfile('config.py')
+app.config.from_pyfile('yp_scrape/settings.py')
 
 db = SQLAlchemy(app)
 

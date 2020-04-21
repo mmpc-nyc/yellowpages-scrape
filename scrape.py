@@ -3,9 +3,9 @@ import requests
 
 from yp_scrape.settings import BASE_URL
 from yp_scrape.settings import SEARCH_URL
+from yp_scrape.settings import SEARCH_TERMS
+from yp_scrape.settings import GEO_LOCATION_TERMS
 
-SEARCH_TERMS = 'nursing home'
-GEO_LOCATION_TERMS = '11209'
 
 
 def get_page(search_terms: str, geo_location_terms: str):
@@ -24,11 +24,13 @@ def parse_listing(_listing):
     street_address = _listing.find('div', {'class': 'street-address'})
     locality = _listing.find('div', {'class': 'locality'})
     phones = _listing.find('div', {'class': 'phones'})
-    _parsed_listing['url'] = business_name['href']
-    _parsed_listing['id'] = business_name['href'].split('-')[-1]
+    _parsed_listing['url'] = business_name['href'].split('?')[0]
+    _parsed_listing['id'] = _parsed_listing['url'].split('-')[-1]
     _parsed_listing['business_name'] = business_name.text
     _parsed_listing['street_address'] = street_address.text if street_address else ''
     _parsed_listing['locality'] = locality.text if locality else ''
+    *city , _parsed_listing['state'], _parsed_listing['zipcode'] = _parsed_listing['locality'].split(' ')
+    _parsed_listing['city'] = ' '.join(city).strip(',')
     _parsed_listing['zipcode'] = _parsed_listing['locality'].split()[-1] if locality else ''
     _parsed_listing['website'] = website['href'] if website else ''
     _parsed_listing['phones'] = phones.text if phones else ''

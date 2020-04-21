@@ -11,3 +11,5 @@ SECRET_KEY = 'tempkey'
 # Scrape
 BASE_URL = 'https://www.yellowpages.com'
 SEARCH_URL = 'https://www.yellowpages.com/search'
+SEARCH_TERMS = 'nursing home'
+GEO_LOCATION_TERMS = '11209'
