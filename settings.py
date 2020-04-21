@@ -1,1 +1,0 @@
-BASE_URL = 'www.yellowpages.com'

@@ -1,4 +1,4 @@
 /venv/
 /.idea/
-/zipcodes.csv
-/data.csv
+/yp-scrape/data/zipcodes.csv
+/yp-scrape/data/data.csv
