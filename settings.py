@@ -1,10 +1,9 @@
 import os
-
 # Flask
 DEBUG = True
 
 # SQL Alchemy
-SQLALCHEMY_DATABASE_URI = 'sqlite:///yp_scrape.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///yp_scrape/yp_scrape.db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRET_KEY = 'tempkey'
 

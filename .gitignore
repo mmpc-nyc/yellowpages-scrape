@@ -2,3 +2,4 @@
 /.idea/
 /yp-scrape/data/zipcodes.csv
 /yp-scrape/data/data.csv
+/yp_scrape.db
