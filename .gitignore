@@ -3,5 +3,7 @@
 /yp-scrape/data/zipcodes.csv
 /yp-scrape/data/data.csv
 /yp_scrape.db
-/yp_scrape/yp_scrape.db
+/yp_scrape.db
 /assets/
+*.ipynb_checkpoints
+/.env

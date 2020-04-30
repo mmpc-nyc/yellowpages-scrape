@@ -1,12 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
 keywords = db.Table(
     'keywords',
@@ -31,7 +35,8 @@ class Listing(db.Model):
     city = db.Column(db.String(100))
     state = db.Column(db.String(100))
     zipcode = db.Column(db.Integer, nullable=False)
-    website = db.Column(db.String(100))
+    website = db.Column(db.String(255))
+    domain = db.Column(db.String(100))
     phone = db.Column(db.String(20))
 
     categories = db.relationship(
@@ -57,8 +62,5 @@ class Category(db.Model):
     name = db.Column(db.String(100))
 
 
-from yp_scrape.views import *
-
 if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+    manager.run()
