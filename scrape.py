@@ -7,11 +7,22 @@ from settings import BASE_URL
 from settings import SEARCH_URL
 
 from scripts.db import merge_listing
+from scripts.db import merge_domain
 from app import Category
 from app import Keyword
 
-SEARCH_TERMS = []
-GEO_LOCATION_TERMS = []
+SEARCH_TERMS = ['pest control']
+GEO_LOCATION_TERMS = [
+    'Brooklyn, NY',
+    'Queens, NY',
+    'New York, NY',
+    'Staten Island, NY',
+    'Westchester, NY',
+    'Long Island, NY',
+    'Jersey City, NY',
+    '11101',
+    '10002',
+]
 
 
 def get_page(search_terms: str, geo_location_terms: str):
@@ -50,10 +61,10 @@ def parse_listing(_listing):
     _parsed_listing['zipcode'] = _parsed_listing['locality'].split()[-1] if locality else ''
     if website:
         _parsed_listing['website'] = website['href']
-        _parsed_listing['domain'] = urlparse(_parsed_listing['website']).netloc
+        _parsed_listing['domain_id'] = urlparse(_parsed_listing['website']).netloc
     else:
         _parsed_listing['website'] = ''
-        _parsed_listing['domain'] = ''
+        _parsed_listing['domain_id'] = ''
     _parsed_listing['phone'] = phones.text if phones else ''
     return _parsed_listing
 
@@ -82,6 +93,8 @@ if __name__ == '__main__':
                 for listing in listings:
                     parsed_listing = parse_listing(listing)
                     if parsed_listing:
+                        if parsed_listing['domain_id']:
+                            merge_domain(parsed_listing['domain_id'])
                         merge_listing(parsed_listing)
                         print(f"{listing_number}\t {parsed_listing['business_name']}")
                     listing_number += 1

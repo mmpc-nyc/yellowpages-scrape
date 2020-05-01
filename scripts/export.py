@@ -39,9 +39,17 @@ def export_domains(keyword: str):
 def update_domains():
     connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
-    domains = db.session.query(Listing).all()
+    domains = db.session.query(Listing).filter(Listing.website != '').all()
+    seen = set()
     for domain in domains:
         updated_domain = urlparse(domain.website).netloc
         print(updated_domain)
-        cursor.execute('UPDATE listing SET domain = ? WHERE id = ?', (updated_domain, domain.id))
+        if updated_domain not in seen:
+            seen.add(updated_domain)
+            cursor.execute('INSERT INTO domain (id) VALUES (?)', (updated_domain,))
+        cursor.execute('UPDATE listing SET domain_id = ? WHERE id = ?', (updated_domain, domain.id))
     connection.commit()
+
+
+if __name__ == '__main__':
+    update_domains()

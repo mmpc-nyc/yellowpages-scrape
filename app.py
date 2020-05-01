@@ -2,12 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
+from sqlalchemy import MetaData
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
@@ -36,7 +37,10 @@ class Listing(db.Model):
     state = db.Column(db.String(100))
     zipcode = db.Column(db.Integer, nullable=False)
     website = db.Column(db.String(255))
-    domain = db.Column(db.String(100))
+    domain_id = db.Column(
+        db.String(100),
+        db.ForeignKey('domain.id', name='fk-domain_id', onupdate='cascade'),
+        nullable=True)
     phone = db.Column(db.String(20))
 
     categories = db.relationship(
@@ -61,6 +65,23 @@ class Category(db.Model):
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String(100))
 
+
+class Source(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email_id = db.Column(db.Integer, db.ForeignKey('email.id'))
+
+
+class Email(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), nullable=False)
+    email_type = db.Column(db.String(64))
+    sources = db.relationship('Source', backref='email', lazy=True)
+
+
+class Domain(db.Model):
+    id = db.Column(db.String(100), primary_key=True, unique=True)
+    parsed = db.Column(db.Boolean(), default=False)
+    listings = db.relationship('Listing', backref='domain', lazy=True)
 
 if __name__ == '__main__':
     manager.run()
